@@ -24,11 +24,14 @@ class AddChatEvent extends HomeEvent {
   final String prompt;
   final FilePickerResult promptImage;
   final String timestamp;
+  final List<List<int>>? promptVector;
+
   AddChatEvent({
     required this.chatId,
     required this.user,
     required this.prompt,
     required this.promptImage,
     required this.timestamp,
+    this.promptVector,
   });
 }

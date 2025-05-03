@@ -44,7 +44,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         // // Save user prompt first
         // await addChat(event.chat);
         // Call DeepSeek API for response
-        final responseText = await _getDeepSeekResponse(event.prompt);
+        final responseText = await _getDeepSeekResponse(event.prompt, event.promptVector);
         // final responseChat = {
         //   'chatId': event.chatId,
         //   'user': event.user,
@@ -75,7 +75,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
   }
 
-  Future<String> _getDeepSeekResponse(String prompt) async {
+  Future<String> _getDeepSeekResponse(String prompt, List<List<int>>? promptVector) async {
     // DeepSeek API integration
     const apiKey = 'YOUR_DEEPSEEK_API_KEY';
     final url = Uri.parse('https://api.deepseek.com/v1/chat/completions');
@@ -90,6 +90,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       ],
       'max_tokens': 256,
       'temperature': 0.7,
+      'prompt_vector': promptVector, // Include 2D prompt vector in the API call
     });
     final response = await http.post(url, headers: headers, body: body);
     if (response.statusCode == 200) {

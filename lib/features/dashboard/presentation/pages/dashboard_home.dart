@@ -78,6 +78,27 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
     ));
   }
 
+  void _onTextSendPrompt(
+    String prompt,
+    FilePickerResult? promptImage,
+    List<List<int>> promptVector, // Change to 2D vector
+  ) {
+    if (promptImage == null && widget.chatHistory.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please attach an image to your prompt.')),
+      );
+      return;
+    }
+    context.read<HomeBloc>().add(AddChatEvent(
+      chatId: widget.currentChatId,
+      user: widget.user['email'],
+      prompt: prompt,
+      promptImage: promptImage ?? FilePickerResult([]),
+      timestamp: DateTime.now().toIso8601String(),
+      promptVector: promptVector, // Pass the 2D prompt vector
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<HomeBloc, HomeState>(
@@ -311,6 +332,7 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
             child: BottomInputContainer(
               isProcessing: isProcessing,
               onTextSend: _onTextSend,
+              onTextSendPrompt: _onTextSendPrompt,
               onImageSend: (file) {},
             ),
           ),
