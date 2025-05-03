@@ -85,12 +85,12 @@ class _BottomInputContainerState extends State<BottomInputContainer> {
     if (_textController.text.trim().isEmpty) {
       return;
     }
-    if (_pickerResult == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please attach an image.')),
-      );
-      return;
-    }
+    // if (_pickerResult == null) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(content: Text('Please attach an image.')),
+    //   );
+    //   return;
+    // }
     widget.onTextSend(_textController.text.trim(), _pickerResult);
     _textController.clear();
     setState(() {

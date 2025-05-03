@@ -19,7 +19,9 @@ class ChatRepositoryImpl implements ChatRepository {
         chatId: chatModel.chatId,
         user: chatModel.user,
         prompt: chatModel.prompt,
-        promptImage: chatModel.promptImage.first,
+        promptImage: chatModel.promptImage.isNotEmpty
+            ? chatModel.promptImage.first
+            : '',
         response: chatModel.response,
         responseImage: chatModel.responseImage.isNotEmpty
             ? chatModel.responseImage.first
@@ -40,7 +42,9 @@ class ChatRepositoryImpl implements ChatRepository {
         chatId: chatModel.chatId,
         user: chatModel.user,
         prompt: chatModel.prompt,
-        promptImage: chatModel.promptImage.first,
+        promptImage: chatModel.promptImage.isNotEmpty
+            ? chatModel.promptImage.first
+            : '',
         response: chatModel.response,
         responseImage: chatModel.responseImage.isNotEmpty
             ? chatModel.responseImage.first
@@ -75,7 +79,9 @@ class ChatRepositoryImpl implements ChatRepository {
         chatId: data.chatId,
         user: data.user,
         prompt: data.prompt,
-        promptImage: data.promptImage.first,
+        promptImage: data.promptImage.isNotEmpty 
+            ? data.promptImage.first
+            : '',
         response: data.response,
         responseImage: data.responseImage.isNotEmpty
             ? data.responseImage.first

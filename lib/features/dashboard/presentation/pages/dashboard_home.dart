@@ -21,12 +21,13 @@ class DashboardHomePage extends StatefulWidget {
   Map<String, dynamic> user;
   String currentChatId;
   List<ChatEntity> chatHistory;
-  DashboardHomePage(
-      {Key? key,
-      required this.user,
-      required this.currentChatId,
-      required this.chatHistory})
-      : super(key: key);
+  String? initialKey;
+  DashboardHomePage({
+    Key? key,
+    required this.user,
+    required this.chatHistory,
+  })  : currentChatId = UniqueKey().toString(), // Generate a unique key for every new chat
+        super(key: key);
 
   @override
   State<DashboardHomePage> createState() => _DashboardHomePageState();
@@ -39,34 +40,30 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
   @override
   void initState() {
     super.initState();
-    if (widget.currentChatId != 'xyz') {
-      context
-          .read<HomeBloc>()
-          .add(FetchCurrentChatHistoryEvent(widget.currentChatId));
+    if (widget.initialKey == null) {
+      widget.initialKey = widget.currentChatId;
+    } else {
+      context.read<HomeBloc>().add(FetchCurrentChatHistoryEvent(widget.currentChatId));
     }
   }
 
-  void _startNewChat() {
+  void startNewChat() {
     setState(() {
       widget.currentChatId = UniqueKey().toString();
       widget.chatHistory = [];
     });
-    context
-        .read<HomeBloc>()
-        .add(FetchCurrentChatHistoryEvent(widget.currentChatId));
+    context.read<HomeBloc>().add(FetchCurrentChatHistoryEvent(widget.currentChatId));
   }
 
-  void _continueCurrentChat() {
-    context
-        .read<HomeBloc>()
-        .add(FetchCurrentChatHistoryEvent(widget.currentChatId));
+  void continueCurrentChat() {
+    context.read<HomeBloc>().add(FetchCurrentChatHistoryEvent(widget.currentChatId));
   }
 
   void _onTextSend(
     String prompt,
     FilePickerResult? promptImage,
   ) {
-    if (promptImage == null) {
+    if (promptImage == null && widget.chatHistory.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please attach an image to your prompt.')),
       );
@@ -76,7 +73,7 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
       chatId: widget.currentChatId,
       user: widget.user['email'],
       prompt: prompt,
-      promptImage: promptImage, // Pass the FilePickerResult, not a String
+      promptImage: promptImage ?? FilePickerResult([]),
       timestamp: DateTime.now().toIso8601String(),
     ));
   }
@@ -101,10 +98,9 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
         mainAxisSize: MainAxisSize.max,
         children: [
           Expanded(
-            child: (context.watch<HomeBloc>().state is HomeLoading &&
-                    widget.currentChatId == 'xyz')
+            child: (context.watch<HomeBloc>().state is HomeLoading && widget.chatHistory.isEmpty)
                 ? const Center(child: CircularProgressIndicator())
-                : (widget.currentChatId == 'xyz' && widget.chatHistory.isEmpty)
+                : (widget.chatHistory.isEmpty)
                     ? LayoutBuilder(
                         builder: (context, constraints) {
                           final height = constraints.maxHeight;
@@ -229,11 +225,14 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
                                         fontStyle: FontStyle.normal,
                                       )),
                                       const SizedBox(height: 5),
+                                      if (chat.promptImage.isNotEmpty)
                                       Image.network(
                                         chat.promptImage,
                                         height: 200,
                                         width: 200,
                                         fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) => 
+                                            const Icon(Icons.error),
                                       ),
                                     ],
                                   ),
@@ -273,6 +272,7 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
                                         fontStyle: FontStyle.normal,
                                       )),
                                       const SizedBox(height: 5),
+                                      if (chat.responseImage.isNotEmpty)
                                       Image.network(
                                         chat.responseImage,
                                         height: 200,
@@ -291,9 +291,7 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
           ),
           BlocBuilder<HomeBloc, HomeState>(
             builder: (context, state) {
-              if (state is HomeLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is HomeError || state is ChatSendError) {
+              if (state is HomeError || state is ChatSendError) {
                 final msg = state is HomeError
                     ? state.message
                     : (state as ChatSendError).message;

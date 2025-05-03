@@ -36,7 +36,6 @@ class _DashboardPageState extends State<DashboardPage> {
     final List<Widget> dashboard_pages = [
       DashboardHomePage(
           user: widget.user,
-          currentChatId: currentChatId,
           chatHistory: chatHistory),
       // DashboardExplorePage(),
       // DashboardBookingPage(),
