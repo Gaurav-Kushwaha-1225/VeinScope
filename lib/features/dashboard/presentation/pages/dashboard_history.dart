@@ -11,7 +11,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../utils/consts.dart';
-import '../../data/models/barber_model.dart';
 import '../bloc/home/home_bloc.dart';
 import '../widgets/barber_card.dart';
 
@@ -58,16 +57,44 @@ class _DashboardHistoryPageState extends State<DashboardHistoryPage> {
               ),
             ));
           }
-          return ListView.builder(
-            itemCount: chatHistory.length,
-            itemBuilder: (context, index) {
-              final chat = chatHistory[index];
-              return ListTile(
-                title: Text(chat['message']),
-                subtitle: Text(chat['timestamp']),
-                leading: const Icon(Icons.chat),
+          // Group chats by chatId
+          final Map<String, List<dynamic>> groupedChats = {};
+          for (var chat in chatHistory) {
+            groupedChats.putIfAbsent(chat.chatId, () => []).add(chat);
+          }
+          return ListView(
+            children: groupedChats.entries.map((entry) {
+              final chatId = entry.key;
+              final chats = entry.value;
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    color: Theme.of(context).brightness == Brightness.light
+                            ? Constants.lightCardFillColor
+                            : Constants.darkCardFillColor,
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: Text(
+                      'Chat ID: ' + chatId,
+                      style: GoogleFonts.urbanist(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Constants.lightTextColor
+                            : Constants.darkTextColor,
+                      ),
+                    ),
+                  ),
+                  ...chats.map<Widget>((chat) => ListTile(
+                        title: Text(chat.prompt),
+                        subtitle: Text(chat.response),
+                        leading: const Icon(Icons.chat),
+                      )),
+                ],
               );
-            },
+            }).toList(),
           );
         } else if (state is HomeError) {
           return Center(child: Text(state.message));

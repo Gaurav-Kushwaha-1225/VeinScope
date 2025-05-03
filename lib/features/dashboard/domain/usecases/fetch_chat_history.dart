@@ -1,11 +1,13 @@
-import 'package:Casca/features/dashboard/domain/repository/barber_repository.dart';
+
+import 'package:Casca/features/dashboard/domain/entities/chat_entity.dart';
+import 'package:Casca/features/dashboard/domain/repository/chat_repository.dart';
 
 class FetchChatHistory {
-  final BarberRepository repository;
+  final ChatRepository repository;
 
   FetchChatHistory(this.repository);
 
-  Future<List<Map<String, dynamic>>> getHistory(String email) {
-    return repository.fetchChatHistory(email);
+  Future<List<ChatEntity>> getHistory(String email) async {
+    return await repository.fetchChatHistory(email);
   }
 }

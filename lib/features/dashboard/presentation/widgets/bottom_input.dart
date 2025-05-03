@@ -2,10 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import '../../../../utils/consts.dart';
 
 class BottomInputContainer extends StatefulWidget {
-  final Function(String) onTextSend;
+  final Function(String, FilePickerResult?) onTextSend;
   final Function(File) onImageSend;
   final bool isProcessing;
 
@@ -23,8 +24,7 @@ class BottomInputContainer extends StatefulWidget {
 class _BottomInputContainerState extends State<BottomInputContainer> {
   final TextEditingController _textController = TextEditingController();
   bool _isComposing = false;
-  File? _selectedImage;
-  bool _showImagePreview = false;
+  FilePickerResult? _pickerResult;
   String? _errorText;
 
   @override
@@ -33,61 +33,81 @@ class _BottomInputContainerState extends State<BottomInputContainer> {
     super.dispose();
   }
 
-  Future<void> _pickImage(ImageSource source) async {
-    final ImagePicker picker = ImagePicker();
-
+  Future<void> pickImage() async {
     try {
-      final XFile? image = await picker.pickImage(
-        source: source,
-        preferredCameraDevice:
-            CameraDevice.front, // Prioritize front camera for eye imaging
-        imageQuality: 100, // High quality needed for medical analysis
+      FilePickerResult? files = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+        type: FileType.custom,
+        allowedExtensions: ["jpg", "jpeg", "png", "gif"],
       );
-
-      if (image != null) {
+      if (files != null && files.files.length == 1) {
         setState(() {
-          _selectedImage = File(image.path);
-          _showImagePreview = true;
+          _pickerResult = files;
         });
+      } else if (files != null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Only 1 image can be selected.",
+              style: Theme.of(context).textTheme.labelSmall),
+          backgroundColor: Theme.of(context).cardColor));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error selecting image: $e')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Error uploading image.",
+            style: Theme.of(context).textTheme.labelSmall),
+        backgroundColor: Theme.of(context).cardColor));
     }
   }
 
-  void _handleImageSubmit() {
-    if (_selectedImage != null) {
-      widget.onImageSend(_selectedImage!);
-      setState(() {
-        _selectedImage = null;
-        _showImagePreview = false;
-      });
-    }
-  }
+  // Future<void> pickFromCamera() async {
+  //   try {
+  //     final ImagePicker picker = ImagePicker();
+  //     final XFile? image = await picker.pickImage(source: ImageSource.camera);
+  //     if (image != null) {
+  //       setState(() async {
+  //         _pickerResult = FilePickerResult([
+  //           PlatformFile(
+  //             name: image.name,
+  //             path: image.path,
+  //             size: await File(image.path).length(),
+  //           ),
+  //         ]);
+  //       });
+  //     }
+  //   } catch (e) {
+  //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //       content: Text("Error opening camera.",
+  //           style: Theme.of(context).textTheme.labelSmall),
+  //       backgroundColor: Theme.of(context).cardColor));
+  //   }
+  // }
 
   void _handleTextSubmit() {
-    if (_textController.text.trim().isNotEmpty) {
-      widget.onTextSend(_textController.text.trim());
-      _textController.clear();
-      setState(() {
-        _isComposing = false;
-      });
+    if (_textController.text.trim().isEmpty) {
+      return;
     }
+    if (_pickerResult == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please attach an image.')),
+      );
+      return;
+    }
+    widget.onTextSend(_textController.text.trim(), _pickerResult);
+    _textController.clear();
+    setState(() {
+      _isComposing = false;
+      _pickerResult = null;
+    });
   }
 
   void _cancelImageSelection() {
     setState(() {
-      _selectedImage = null;
-      _showImagePreview = false;
+      _pickerResult = null;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    // double height = MediaQuery.of(context).size.height;
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).brightness == Brightness.light
@@ -106,7 +126,7 @@ class _BottomInputContainerState extends State<BottomInputContainer> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (_showImagePreview && _selectedImage != null)
+          if (_pickerResult != null && _pickerResult!.files.isNotEmpty)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
               width: width,
@@ -115,7 +135,7 @@ class _BottomInputContainerState extends State<BottomInputContainer> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.file(
-                      _selectedImage!,
+                      File(_pickerResult!.files.first.path!),
                       height: 120,
                       fit: BoxFit.cover,
                     ),
@@ -149,12 +169,6 @@ class _BottomInputContainerState extends State<BottomInputContainer> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                  const SizedBox(width: 10),
                   Text(
                     "Processing eye vein analysis...",
                     style: GoogleFonts.urbanist(
@@ -181,11 +195,6 @@ class _BottomInputContainerState extends State<BottomInputContainer> {
               cursorColor: Theme.of(context).brightness == Brightness.light
                   ? Constants.lightTextColor
                   : Constants.darkTextColor,
-              // validator: (String? text) {
-              //   return (text == null || text.isEmpty)
-              //       ? 'Please enter a message'
-              //       : null;
-              // },
               keyboardType: TextInputType.text,
               maxLines: 5,
               minLines: 1,
@@ -196,13 +205,6 @@ class _BottomInputContainerState extends State<BottomInputContainer> {
                       : Constants.darkTextColor,
                   fontStyle: FontStyle.normal),
               decoration: InputDecoration(
-                  // errorText: _errorText,
-                  // errorStyle: GoogleFonts.urbanist(
-                  //     fontSize: 10,
-                  //     color: Theme.of(context).brightness == Brightness.light
-                  //         ? Colors.red.shade600
-                  //         : Colors.red.shade300,
-                  //     fontStyle: FontStyle.normal),
                   enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                           color: Theme.of(context).brightness == Brightness.light
@@ -240,13 +242,11 @@ class _BottomInputContainerState extends State<BottomInputContainer> {
             ),
           ),
 
-          // Input container
           Padding(
             padding:
                 const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 5),
             child: Row(
               children: [
-                // Camera button
                 IconButton(
                   padding: EdgeInsets.zero,
                   constraints: BoxConstraints(),
@@ -257,10 +257,10 @@ class _BottomInputContainerState extends State<BottomInputContainer> {
                         ? Constants.lightSecondary
                         : Constants.darkSecondary,
                   ),
-                  onPressed: () => _pickImage(ImageSource.camera),
+                  onPressed: () {},
+                  // onPressed: pickFromCamera,
                 ),
 
-                // Gallery button
                 IconButton(
                   padding: EdgeInsets.zero,
                   constraints: BoxConstraints(),
@@ -271,15 +271,13 @@ class _BottomInputContainerState extends State<BottomInputContainer> {
                         ? Constants.lightSecondary
                         : Constants.darkSecondary,
                   ),
-                  onPressed: () => _pickImage(ImageSource.gallery),
+                  onPressed: pickImage,
                 ),
 
-                // Text input field
                 Expanded(
                   child: Container(),
                 ),
 
-                // Send button (for text)
                 if (_isComposing)
                   IconButton(
                     padding: EdgeInsets.zero,
@@ -292,21 +290,6 @@ class _BottomInputContainerState extends State<BottomInputContainer> {
                           : Constants.darkSecondary,
                     ),
                     onPressed: _handleTextSubmit,
-                  ),
-
-                // Analyze button (for image)
-                if (_selectedImage != null && !_isComposing)
-                  IconButton(
-                    padding: EdgeInsets.zero,
-                    constraints: BoxConstraints(),
-                    icon: Icon(
-                      Icons.analytics_outlined,
-                      opticalSize: 20,
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Constants.lightSecondary
-                          : Constants.darkSecondary,
-                    ),
-                    onPressed: _handleImageSubmit,
                   ),
               ],
             ),

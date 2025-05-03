@@ -39,22 +39,22 @@ class _DashboardProfilePageState extends State<DashboardProfilePage> {
               pathParameters: {'user': jsonEncode(widget.user)});
         }
       ],
-      [
-        Icons.notifications_none_rounded,
-        "Notification",
-        Icon(
-          Icons.navigate_next_rounded,
-          size: 28,
-          color: Theme.of(context).brightness == Brightness.light
-              ? Constants.lightTextColor
-              : Constants.darkTextColor,
-        ),
-        () {
-          GoRouter.of(context).pushNamed(
-              CascaRoutesNames.notificationBookmarkPage,
-              pathParameters: {'service': jsonEncode("Notification")});
-        }
-      ],
+      // [
+      //   Icons.notifications_none_rounded,
+      //   "Notification",
+      //   Icon(
+      //     Icons.navigate_next_rounded,
+      //     size: 28,
+      //     color: Theme.of(context).brightness == Brightness.light
+      //         ? Constants.lightTextColor
+      //         : Constants.darkTextColor,
+      //   ),
+      //   () {
+      //     GoRouter.of(context).pushNamed(
+      //         CascaRoutesNames.notificationBookmarkPage,
+      //         pathParameters: {'service': jsonEncode("Notification")});
+      //   }
+      // ],
       [
         Icons.payment_rounded,
         "Payment",

@@ -1,0 +1,2 @@
+/home/friday_code/Desktop/Casca/Casca/android/app/.cxx/RelWithDebInfo/55375x62/armeabi-v7a/CMakeFiles/edit_cache.dir
+/home/friday_code/Desktop/Casca/Casca/android/app/.cxx/RelWithDebInfo/55375x62/armeabi-v7a/CMakeFiles/rebuild_cache.dir

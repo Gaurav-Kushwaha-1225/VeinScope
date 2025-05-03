@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:Casca/features/dashboard/domain/entities/chat_entity.dart';
+import 'package:Casca/features/dashboard/presentation/bloc/home/home_bloc.dart';
 import 'package:Casca/features/dashboard/presentation/pages/dashboard_history.dart';
 import 'package:Casca/features/dashboard/presentation/pages/dashboard_home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -23,12 +26,18 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   int currentBottomNavigationPage = 0;
+  static const String chatId = 'xyz'; // Constant chatId for the chat session
+  String currentChatId = chatId;
+  List<ChatEntity> chatHistory = [];
 
   @override
   Widget build(BuildContext context) {
     // User currentUser = User.fromJson(widget.user);
     final List<Widget> dashboard_pages = [
-      DashboardHomePage(user: widget.user),
+      DashboardHomePage(
+          user: widget.user,
+          currentChatId: currentChatId,
+          chatHistory: chatHistory),
       // DashboardExplorePage(),
       // DashboardBookingPage(),
       // DashboardInboxPage(),
@@ -43,45 +52,29 @@ class _DashboardPageState extends State<DashboardPage> {
         preferredSize: Size.fromHeight(75),
         child: CustomAppBar(
           text: appBarHeading[currentBottomNavigationPage],
-          leadingFunc: () {
-            log("Leading Function Called");
-          },
+          leadingFunc: () {},
           actions: [
-            IconButton(
-              onPressed: () {
-                GoRouter.of(context).pushNamed(
-                    CascaRoutesNames.notificationBookmarkPage,
-                    pathParameters: {'service': jsonEncode("Notification")});
-              },
-              icon: Icon(
-                Icons.notifications_none_rounded,
-                size: 28,
-                color: Theme.of(context).brightness == Brightness.light
-                    ? Constants.lightTextColor
-                    : Constants.darkTextColor,
+            if (currentBottomNavigationPage == 0)
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    currentChatId = UniqueKey().toString();
+                    chatHistory = [];
+                  });
+                  context
+                      .read<HomeBloc>()
+                      .add(FetchCurrentChatHistoryEvent(currentChatId));
+                },
+                icon: Icon(
+                  Icons.chat_rounded,
+                  size: 23,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Constants.lightTextColor
+                      : Constants.darkTextColor,
+                ),
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
               ),
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-            ),
-            IconButton(
-              onPressed: () {
-                GoRouter.of(context).pushNamed(
-                    CascaRoutesNames.notificationBookmarkPage,
-                    pathParameters: {'service': jsonEncode("Bookmark")});
-              },
-              icon: Icon(
-                Icons.bookmark_border_rounded,
-                size: 28,
-                color: Theme.of(context).brightness == Brightness.light
-                    ? Constants.lightTextColor
-                    : Constants.darkTextColor,
-              ),
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-            ),
-            SizedBox(
-              width: 10,
-            )
           ],
         ),
       ),

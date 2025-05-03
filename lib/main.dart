@@ -4,9 +4,11 @@ import 'package:Casca/features/authentication/domain/usecases/login_user.dart';
 import 'package:Casca/features/authentication/domain/usecases/signup_user.dart';
 import 'package:Casca/features/authentication/domain/usecases/update_user.dart';
 import 'package:Casca/features/authentication/presentation/bloc/authentication_bloc/authentication_bloc.dart';
-import 'package:Casca/features/dashboard/data/data_sources/barber_database.dart';
-import 'package:Casca/features/dashboard/data/repository/barber_repository_impl.dart';
+import 'package:Casca/features/dashboard/data/data_sources/chats_database.dart';
+import 'package:Casca/features/dashboard/data/repository/chat_repository_impl.dart';
+import 'package:Casca/features/dashboard/domain/usecases/add_chat.dart';
 import 'package:Casca/features/dashboard/domain/usecases/fetch_chat_history.dart';
+import 'package:Casca/features/dashboard/domain/usecases/fetch_current_chat_history.dart';
 import 'package:Casca/utils/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,7 +22,7 @@ import 'features/dashboard/presentation/bloc/home/home_bloc.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CascaUsersDB.connect();
-  await CascaBarberDB.connect();
+  await CascaVeinScopeDB.connect();
   final storage = FlutterSecureStorage();
   final GoRouter router = CascaRouter().router;
   runApp(BlocProvider<ThemeBloc>(
@@ -45,7 +47,7 @@ class Casca extends StatelessWidget {
         RepositoryProvider<UpdateUser>(
             create: (_) => UpdateUser(UserRepositoryImpl(CascaUsersDB()))),
         RepositoryProvider<FetchChatHistory>(
-            create: (_) => FetchChatHistory(BarberRepositoryImpl(CascaBarberDB()))),
+            create: (_) => FetchChatHistory(ChatRepositoryImpl(CascaVeinScopeDB()))),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -56,7 +58,10 @@ class Casca extends StatelessWidget {
                   updateUser: UpdateUser(UserRepositoryImpl(CascaUsersDB())))),
           BlocProvider<HomeBloc>(
               create: (context) => HomeBloc(
-                  fetchChatHistory: FetchChatHistory(BarberRepositoryImpl(CascaBarberDB())))),
+                  addChat: AddChat(ChatRepositoryImpl(CascaVeinScopeDB())),
+                  fetchCurrentChatHistory: FetchCurrentChatHistory(
+                      ChatRepositoryImpl(CascaVeinScopeDB())),
+                  fetchChatHistory: FetchChatHistory(ChatRepositoryImpl(CascaVeinScopeDB())))),
         ],
         child: BlocBuilder<ThemeBloc, ThemeState>(
           builder: (context, state) {

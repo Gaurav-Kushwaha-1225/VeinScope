@@ -18,7 +18,19 @@ class HomeError extends HomeState {
 }
 
 class ChatHistoryLoaded extends HomeState {
-  final List<Map<String, dynamic>> chatHistory;
+  final List<ChatEntity> chatHistory;
 
   ChatHistoryLoaded({required this.chatHistory});
+}
+
+class ChatSendSuccess extends HomeState {
+  final ChatEntity chat;
+
+  ChatSendSuccess({required this.chat});
+}
+
+class ChatSendError extends HomeState {
+  final String message;
+
+  ChatSendError(this.message);
 }
