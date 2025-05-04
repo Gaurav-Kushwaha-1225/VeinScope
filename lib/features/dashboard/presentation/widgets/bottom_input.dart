@@ -47,6 +47,7 @@ class _BottomInputContainerState extends State<BottomInputContainer> {
         allowMultiple: false,
         type: FileType.custom,
         allowedExtensions: ["jpg", "jpeg", "png", "gif"],
+        withData: true
       );
       if (files != null && files.files.length == 1) {
         setState(() {

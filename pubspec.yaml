@@ -57,6 +57,7 @@ dependencies:
   cloudinary_flutter: ^1.3.0
   cloudinary_url_gen: ^1.7.0
   http: ^1.3.0
+  dartssh2: ^2.12.0
 
 flutter_native_splash:
   color: "#fda01d"

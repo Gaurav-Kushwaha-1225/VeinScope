@@ -64,6 +64,7 @@ class ChatRepositoryImpl implements ChatRepository {
     String response,
     FilePickerResult responseImage,
     String timestamp,
+    List<List<int>>? promptVector,
   ) async {
     final data = await db.addChatToHistory(
       chatId,
@@ -73,6 +74,7 @@ class ChatRepositoryImpl implements ChatRepository {
       response,
       responseImage,
       timestamp,
+      promptVector,
     );
     if (data != null) {
       return ChatEntity(

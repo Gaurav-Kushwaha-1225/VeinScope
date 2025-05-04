@@ -14,6 +14,7 @@ class AddChat {
     String response,
     FilePickerResult responseImage,
     DateTime timestamp,
+    List<List<int>>? promptVector,
   ) async {
     return await repository.addChat(
       chatId,
@@ -23,6 +24,7 @@ class AddChat {
       response,
       responseImage,
       timestamp.toIso8601String(),
+      promptVector,
     );
   }
 }

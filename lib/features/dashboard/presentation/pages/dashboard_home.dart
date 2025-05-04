@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
+import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:Casca/config/routes/routes_consts.dart';
 import 'package:Casca/features/authentication/domain/entities/user.dart';
 import 'package:Casca/features/dashboard/presentation/widgets/bottom_input.dart';
+import 'package:Casca/services/server.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,7 +49,8 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
     }
   }
 
-  void startNewChat() {
+  void startNewChat() async {
+    await processImageOnServer('/home/teaching/', '/home/teaching/');
     setState(() {
       widget.currentChatId = UniqueKey().toString();
       widget.chatHistory = [];
@@ -89,13 +92,29 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
       );
       return;
     }
+
+    // Extract indices where the value is 1 and form pairs [[x1, y1], [x2, y2], ...]
+    final formattedPromptVector = <List<int>>[];
+    for (int i = 0; i < promptVector.length; i++) {
+      for (int j = 0; j < promptVector[i].length; j++) {
+        if (promptVector[i][j] == 1) {
+          formattedPromptVector.add([i, j]);
+        }
+      }
+    }
+
+    // Ensure the formattedPromptVector is limited to a maximum length of 5
+    if (formattedPromptVector.length > 5) {
+      formattedPromptVector.removeRange(5, formattedPromptVector.length);
+    }
+
     context.read<HomeBloc>().add(AddChatEvent(
       chatId: widget.currentChatId,
       user: widget.user['email'],
       prompt: prompt,
       promptImage: promptImage ?? FilePickerResult([]),
       timestamp: DateTime.now().toIso8601String(),
-      promptVector: promptVector, // Pass the 2D prompt vector
+      promptVector: formattedPromptVector, // Pass the formatted 2D prompt vector
     ));
   }
 
@@ -213,6 +232,7 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
                             children: [
                               if (chat.prompt.isNotEmpty)
                                 Container(
+                                  alignment: Alignment.centerRight,
                                   margin: const EdgeInsets.symmetric(
                                       vertical: 6, horizontal: 12),
                                   padding: const EdgeInsets.all(12),
@@ -262,6 +282,7 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
                                 Container(
                                   margin: const EdgeInsets.symmetric(
                                       vertical: 6, horizontal: 12),
+                                  alignment: Alignment.centerLeft,
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
                                     color: Theme.of(context).brightness ==

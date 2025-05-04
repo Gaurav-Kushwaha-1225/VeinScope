@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:Casca/features/dashboard/data/data_sources/link.dart';
 import 'package:Casca/features/dashboard/domain/entities/chat_entity.dart';
 import 'package:Casca/features/dashboard/domain/usecases/add_chat.dart';
 import 'package:Casca/features/dashboard/domain/usecases/fetch_chat_history.dart';
@@ -14,6 +15,9 @@ import '../../../data/data_sources/chats_database.dart';
 part 'home_event.dart';
 part 'home_state.dart';
 
+final connectionURL =
+    "mongodb+srv://casca:casca@casca.gctq7.mongodb.net/CascaDB?retryWrites=true&w=majority";
+    
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final AddChat addChat;
   final FetchChatHistory fetchChatHistory;
@@ -44,24 +48,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         // // Save user prompt first
         // await addChat(event.chat);
         // Call DeepSeek API for response
-        final responseText = await _getDeepSeekResponse(event.prompt, event.promptVector);
-        // final responseChat = {
-        //   'chatId': event.chatId,
-        //   'user': event.user,
-        //   'prompt': event.prompt,
-        //   'promptImage': event.promptImage,
-        //   'response': responseText,
-        //   'responseImage': FilePickerResult([]),
-        //   'timestamp': DateTime.now().toIso8601String(),
-        // };
+        // final responseText = await _getDeepSeekResponse(event.prompt, event.promptVector);
+        // print('object');
+        
         ChatEntity? chatEntity = await addChat.call(
           event.chatId,
           event.user,
           event.prompt,
           event.promptImage,
-          responseText,
+          "dsdbsdbfbdfbdfbdf",
           FilePickerResult([]),
           DateTime.now(),
+          event.promptVector,
         );
         if (chatEntity == null) {
           emit(HomeError(message: "Failed to save chat"));
@@ -75,34 +73,4 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
   }
 
-  Future<String> _getDeepSeekResponse(String prompt, List<List<int>>? promptVector) async {
-    // DeepSeek API integration
-    const apiKey = 'YOUR_DEEPSEEK_API_KEY';
-    final url = Uri.parse('https://api.deepseek.com/v1/chat/completions');
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $apiKey',
-    };
-    final body = jsonEncode({
-      'model': 'deepseek-chat',
-      'messages': [
-        {'role': 'user', 'content': prompt}
-      ],
-      'max_tokens': 256,
-      'temperature': 0.7,
-      'prompt_vector': promptVector, // Include 2D prompt vector in the API call
-    });
-    final response = await http.post(url, headers: headers, body: body);
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return data['choices'][0]['message']['content'] ?? '';
-    } else {
-      // Check for billing/paid error and provide fallback
-      if (response.body.contains('insufficient_quota') || response.body.contains('billing')) {
-        return 'Sorry, the AI service is currently unavailable due to billing or quota issues.';
-      }
-      // Fallback: use a simple rule-based response
-      return 'Sorry, I am unable to process your request at the moment.';
-    }
-  }
 }

@@ -5,6 +5,7 @@ import 'package:Casca/features/authentication/domain/usecases/signup_user.dart';
 import 'package:Casca/features/authentication/domain/usecases/update_user.dart';
 import 'package:Casca/features/authentication/presentation/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:Casca/features/dashboard/data/data_sources/chats_database.dart';
+import 'package:Casca/features/dashboard/data/data_sources/link.dart';
 import 'package:Casca/features/dashboard/data/repository/chat_repository_impl.dart';
 import 'package:Casca/features/dashboard/domain/usecases/add_chat.dart';
 import 'package:Casca/features/dashboard/domain/usecases/fetch_chat_history.dart';
@@ -23,6 +24,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CascaUsersDB.connect();
   await CascaVeinScopeDB.connect();
+  await TempLink.connect();
   final storage = FlutterSecureStorage();
   final GoRouter router = CascaRouter().router;
   runApp(BlocProvider<ThemeBloc>(

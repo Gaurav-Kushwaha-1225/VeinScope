@@ -13,5 +13,6 @@ abstract class ChatRepository {
     String response,
     FilePickerResult responseImage,
     String timestamp,
+    List<List<int>>? promptVector,
   );
 }
