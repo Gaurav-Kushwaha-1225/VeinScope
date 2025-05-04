@@ -1,6 +1,6 @@
 <div align="center">
    <img src="readme_assets/banner.gif"/>
-   <h1>Casca - Your Barber, Your Doorstep</h1>
+   <h1>Casca - Your Eye, Your Doorstep</h1>
 </div>
 <div align="center">
 
@@ -19,11 +19,8 @@
 </p>
 </div>
 
-<p align='center'> Welcome to Casca, the premier mobile app for booking professional barbers to come to your home.<br>Say goodbye to waiting in line at the barbershop and enjoy the luxury of personalized grooming in the comfort of your own space. </p>
-
 ### 💇 Overview
-
-Casca is designed to revolutionize the way you think about haircuts. Our app allows you to schedule appointments with top-rated barbers who bring their tools and expertise right to your doorstep.
+Eye AI
 
 ### 🌐 Acknowledgements
 
@@ -39,9 +36,6 @@ Casca is designed to revolutionize the way you think about haircuts. Our app all
 | <img src="readme_assets/signup.jpg"/> | <img src="readme_assets/signup_dark.jpg"/> | <img src="readme_assets/forgot_1.jpg"/> | <img src="readme_assets/forgot_1_dark.jpg"/> |
 | <img src="readme_assets/forgot_2.jpg"/>        | <img src="readme_assets/forgot_2_dark.jpg"/>  | <img src="readme_assets/forgot_3.jpg"/>       | <img src="readme_assets/forgot_3_dark.jpg"/>        |
 | <img src="readme_assets/home.jpg"/>         | <img src="readme_assets/home_dark.jpg"/>         |  <img src="readme_assets/explore.jpg"/>         |   <img src="readme_assets/explore_dark.jpg"/>         |
-| <img src="readme_assets/dashboard_home_haircut_dark.jpg"/>         | <img src="readme_assets/dashboard_home_manicure.jpg"/>         |  <img src="readme_assets/dashboard_home_massage_dark.jpg"/>         |   <img src="readme_assets/dashboard_home_makeup.jpg"/>         |
-| <img src="readme_assets/explore_gk_dark.jpg"/>         | <img src="readme_assets/explore_gk.jpg"/>         |  <img src="readme_assets/barber_about_us_1_dark.jpg"/>         |   <img src="readme_assets/barber_about_us_2_dark.jpg"/>         |
-| <img src="readme_assets/barber_services_1_dark.jpg"/>         | <img src="readme_assets/barber_services_2_dark.jpg"/>         |  <img src="readme_assets/barber_gallery_dark.jpg"/>         |   <img src="readme_assets/barber_review_dark.jpg"/>         |
 
 ---
 
