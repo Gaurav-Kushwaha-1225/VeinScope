@@ -61,8 +61,10 @@ class CascaVeinScopeDB {
     String? link = await TempLink.getLink();
     String responseImages = '';
     if (promptImages.isNotEmpty && link != null) {
-      responseImages = await _postRequestWithImageAndVector(
+      Map<String, dynamic> data = await _postRequestWithImageAndVector(
           link, promptImages[0], promptVector);
+      responseImages = data['image_link'] ?? "";
+      response = data['features'] ?? "";
     }
 
     // List<String> responseImages = await uploadImages(responseImage);
@@ -90,7 +92,7 @@ class CascaVeinScopeDB {
     log('Connection to MongoDB closed');
   }
 
-  Future<String> _postRequestWithImageAndVector(
+  Future<Map<String, dynamic>> _postRequestWithImageAndVector(
       String link, String promptImage, List<List<int>>? promptVector) async {
     try {
       final url = Uri.parse(link);
@@ -106,7 +108,7 @@ class CascaVeinScopeDB {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return data['image_link'] ?? '';
+        return data ?? {};
       } else {
         throw Exception('Failed to get response: ${response.body}');
       }

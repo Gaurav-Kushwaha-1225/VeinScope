@@ -67,6 +67,33 @@ class _BottomInputContainerState extends State<BottomInputContainer> {
     }
   }
 
+  void _openCamera() async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? photo = await picker.pickImage(source: ImageSource.camera);
+
+      if (photo != null) {
+        FilePickerResult result = FilePickerResult([
+          PlatformFile(
+            name: photo.name,
+            path: photo.path,
+            size: await File(photo.path).length(),
+          )
+        ]);
+
+        setState(() {
+          _pickerResult = result;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Error capturing image.",
+            style: Theme.of(context).textTheme.labelSmall),
+        backgroundColor: Theme.of(context).cardColor,
+      ));
+    }
+  }
+
   void _onImageTap(BuildContext context, Offset position) {
     // Count the number of selected prompts (1s in the promptVector)
     final int selectedPrompts =
@@ -235,6 +262,7 @@ class _BottomInputContainerState extends State<BottomInputContainer> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return Container(
+      
       decoration: BoxDecoration(
         color: Theme.of(context).brightness == Brightness.light
             ? Constants.lightPrimary
@@ -382,7 +410,7 @@ class _BottomInputContainerState extends State<BottomInputContainer> {
                         ? Constants.lightSecondary
                         : Constants.darkSecondary,
                   ),
-                  onPressed: () {},
+                  onPressed: _openCamera,
                 ),
                 IconButton(
                   padding: EdgeInsets.zero,

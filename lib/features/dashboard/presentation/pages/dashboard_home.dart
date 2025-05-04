@@ -98,7 +98,7 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
     for (int i = 0; i < promptVector.length; i++) {
       for (int j = 0; j < promptVector[i].length; j++) {
         if (promptVector[i][j] == 1) {
-          formattedPromptVector.add([i, j]);
+          formattedPromptVector.add([j, i]);
         }
       }
     }
@@ -147,63 +147,65 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
                           final user = widget.user;
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  "Hi ${user['name'] ?? ''}",
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.urbanist(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w700,
-                                    color: Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Constants.lightTextColor
-                                        : Constants.darkTextColor,
-                                    letterSpacing: 2,
-                                    wordSpacing: 1.25,
-                                    fontStyle: FontStyle.normal,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "Hi ${user['name'] ?? ''}",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.urbanist(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w700,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Constants.lightTextColor
+                                          : Constants.darkTextColor,
+                                      letterSpacing: 2,
+                                      wordSpacing: 1.25,
+                                      fontStyle: FontStyle.normal,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: height * 0.02,
-                                ),
-                                Text(
-                                  "Welcome to VeinScope!",
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.urbanist(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                    color: Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Constants.lightTextColor
-                                        : Constants.darkTextColor,
-                                    letterSpacing: 2,
-                                    wordSpacing: 1.25,
-                                    fontStyle: FontStyle.normal,
+                                  SizedBox(
+                                    height: height * 0.02,
                                   ),
-                                ),
-                                SizedBox(
-                                  height: height * 0.02,
-                                ),
-                                Text(
-                                  "An AI-Powered Eye Vein Analysis, where you can detect and segment tear vein patterns for early health insights.",
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.urbanist(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: Theme.of(context).brightness ==
-                                            Brightness.light
-                                        ? Constants.lightTextColor
-                                        : Constants.darkTextColor,
-                                    letterSpacing: 2,
-                                    wordSpacing: 1.25,
-                                    fontStyle: FontStyle.normal,
+                                  Text(
+                                    "Welcome to VeinScope!",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.urbanist(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Constants.lightTextColor
+                                          : Constants.darkTextColor,
+                                      letterSpacing: 2,
+                                      wordSpacing: 1.25,
+                                      fontStyle: FontStyle.normal,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  SizedBox(
+                                    height: height * 0.02,
+                                  ),
+                                  Text(
+                                    "An AI-Powered Eye Vein Analysis, where you can detect and segment tear vein patterns for early health insights.",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.urbanist(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? Constants.lightTextColor
+                                          : Constants.darkTextColor,
+                                      letterSpacing: 2,
+                                      wordSpacing: 1.25,
+                                      fontStyle: FontStyle.normal,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         },
