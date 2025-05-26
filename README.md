@@ -35,7 +35,6 @@ Eye AI
 |-----------------------------------------------|----------------------------------------------| ------------------------------------------- | ---------------------------------------------- |
 | <img src="readme_assets/signup.jpg"/> | <img src="readme_assets/signup_dark.jpg"/> | <img src="readme_assets/forgot_1.jpg"/> | <img src="readme_assets/forgot_1_dark.jpg"/> |
 | <img src="readme_assets/forgot_2.jpg"/>        | <img src="readme_assets/forgot_2_dark.jpg"/>  | <img src="readme_assets/forgot_3.jpg"/>       | <img src="readme_assets/forgot_3_dark.jpg"/>        |
-| <img src="readme_assets/home.jpg"/>         | <img src="readme_assets/home_dark.jpg"/>         |  <img src="readme_assets/explore.jpg"/>         |   <img src="readme_assets/explore_dark.jpg"/>         |
 
 ---
 
