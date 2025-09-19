@@ -31,10 +31,9 @@ Eye AI
 
 ### 📷 Screenshots
 
-| <img src="readme_assets/onboarding.jpg"/>      | <img src="readme_assets/onboarding_dark.jpg"/>      | <img src="readme_assets/login.jpg"/>      | <img src="readme_assets/login_dark.jpg"/>      |
-|-----------------------------------------------|----------------------------------------------| ------------------------------------------- | ---------------------------------------------- |
-| <img src="readme_assets/signup.jpg"/> | <img src="readme_assets/signup_dark.jpg"/> | <img src="readme_assets/forgot_1.jpg"/> | <img src="readme_assets/forgot_1_dark.jpg"/> |
-| <img src="readme_assets/forgot_2.jpg"/>        | <img src="readme_assets/forgot_2_dark.jpg"/>  | <img src="readme_assets/forgot_3.jpg"/>       | <img src="readme_assets/forgot_3_dark.jpg"/>        |
+| <img src="https://github.com/user-attachments/assets/739ced9d-596d-41e2-92f3-9b3d97e47b03"/>      | <img src="https://github.com/user-attachments/assets/23c5c777-837a-45c4-9d34-48f1bdf33f8d" />      | <img src="https://github.com/user-attachments/assets/680a682e-6471-418b-b0b7-07166a732e73" />      |
+|-----------------------------------------------|----------------------------------------------| ------------------------------------------- |
+| <img src="readme_assets/signup.jpg"/> | <img src="readme_assets/signup_dark.jpg"/> | <img src="readme_assets/forgot_1.jpg"/> |
 
 ---
 
